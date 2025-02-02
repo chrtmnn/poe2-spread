@@ -1,10 +1,12 @@
 import React from "react";
-import Table from "antd/es/table";
+import Table, { TableProps } from "antd/es/table";
 
-export const PsTable: React.FC = () => {
+export type PsTableProps<RecordType> = TableProps<RecordType>;
+
+export const PsTable: React.FC<PsTableProps<unknown>> = ({ ...props }) => {
   return (
     <>
-      <Table />
+      <Table {...props} />
     </>
   );
 };
