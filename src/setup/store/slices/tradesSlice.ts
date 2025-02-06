@@ -18,7 +18,9 @@ const initialState: TradesSliceState = {
 const tradesSlice = createSlice({
   name: "trades",
   initialState,
-  reducers: {},
+  reducers: {
+    resetTradesState: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTrades.pending, (state) => {
@@ -35,4 +37,5 @@ const tradesSlice = createSlice({
   },
 });
 
+export const { resetTradesState } = tradesSlice.actions;
 export const tradesReducer = tradesSlice.reducer;

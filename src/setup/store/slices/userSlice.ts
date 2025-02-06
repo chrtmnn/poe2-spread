@@ -8,6 +8,7 @@ import { auth } from "../../firebase";
 import { User } from "../../types";
 import { getErrorMessage } from "../../utils";
 import { AppDispatch } from "../store";
+import { resetTradesState } from "./tradesSlice";
 
 export type UserSliceState = {
   user: User | null;
@@ -80,6 +81,7 @@ export const initializeAuthListener = () => (dispatch: AppDispatch) => {
       dispatch(setUser({ uid, email, displayName, photoURL })); // Update Redux store with user
     } else {
       dispatch(logoutUser());
+      dispatch(resetTradesState());
     }
   });
 };
