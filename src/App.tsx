@@ -1,58 +1,43 @@
-import Button from "antd/es/button";
-import ConfigProvider from "antd/es/config-provider";
-import Space from "antd/es/space";
-import theme from "antd/es/theme";
 import React from "react";
-import PsTable, { PsTableProps } from "./components/PsTable";
-import getTrades from "./setup/services/trades";
+import { useDispatch, useSelector } from "react-redux";
+import Layout from "./components/Layout";
+import Login from "./components/Login";
+import { AppDispatch, RootState } from "./setup/store";
+import { fetchTrades } from "./setup/store/actions";
 
 const App = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [dataSource, setDataSoure] = React.useState<any>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { trades, status, error } = useSelector(
+    ({ trades }: RootState) => trades
+  );
+  const { user } = useSelector(({ user }: RootState) => user);
 
   React.useEffect(() => {
-    const get = async () => {
-      const data = await getTrades();
-      console.log(data);
-      setDataSoure(data);
-    };
-    get();
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const columns: PsTableProps<any>["columns"] = React.useMemo(
-    () =>
-      [
-        { dataIndex: "id" },
-        { dataIndex: ["buy", "quantity"] },
-        { dataIndex: ["buy", "currency", "id"] },
-      ].map(({ dataIndex, ...column }) => ({
-        dataIndex,
-        title: Array.isArray(dataIndex) ? dataIndex.join(".") : dataIndex,
-        ...column,
-      })),
-    []
-  );
-
-  const [darkMode, setDarkMode] = React.useState<boolean>(true);
+    if (user) {
+      dispatch(fetchTrades(user));
+    }
+  }, [dispatch, user]);
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: "#5e2609",
-          borderRadius: 12,
-        },
-      }}
-    >
-      <Space direction={"vertical"}>
-        <Button type={"primary"} onClick={() => setDarkMode((mode) => !mode)}>
-          toggle
-        </Button>
-        <PsTable columns={columns} dataSource={dataSource} rowKey={"id"} />
-      </Space>
-    </ConfigProvider>
+    <Layout>
+      <div style={{ padding: 24 }}>
+        <h1>Welcome to the site!</h1>
+        <p>This is the main content area.</p>
+        <Login />
+        <p>
+          <button
+            onClick={() => {
+              if (user) dispatch(fetchTrades(user));
+              console.log({ trades, status, error });
+            }}
+          >
+            reload data
+          </button>
+        </p>
+        <p>{JSON.stringify(user)}</p>
+        <p>{JSON.stringify(trades)}</p>
+      </div>
+    </Layout>
   );
 };
 

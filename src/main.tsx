@@ -1,11 +1,17 @@
-import { StrictMode } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import { Provider as ReduxProvider } from "react-redux";
 import App from "./App.tsx";
+import "./index.css";
+import { initializeAuthListener, store } from "./setup/store";
+
+store.dispatch(initializeAuthListener());
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+  <React.StrictMode>
+    <ReduxProvider store={store}>
+      <App />
+    </ReduxProvider>
+  </React.StrictMode>
 );
